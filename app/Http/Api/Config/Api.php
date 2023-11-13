@@ -25,10 +25,34 @@ class Api
   }
 
   /**
+   * Devuelve el source
+   */
+  public function source(): string
+  {
+    return env('VITE_API_SOURCE');
+  }
+
+  /**
+   * Devuelve la currency
+   */
+  public function currency(): string
+  {
+    return env('VITE_API_CURRENCY');
+  }
+
+  /**
+   * Devuelve el format
+   */
+  public function format(): string
+  {
+    return env('VITE_API_FORMAT');
+  }
+
+  /**
    * Devuelve el endpoint base
    */
   public function baseEndpoint(): string
   {
-    return $this->baseURl() . '/live?access_key=' . $this->token() . '&format=1';
+    return $this->baseURl() . '/live?access_key=' . $this->token();
   }
 }

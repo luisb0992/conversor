@@ -6,14 +6,48 @@ import {
     originalPopularCountries,
 } from "./../../../Util/const.js";
 
-import { ref } from "vue";
+import { computed, ref, watch, toRefs } from "vue";
 import { alertError } from "./../../../Util/alerts.js";
+import { getExchangeRateFromTo } from "@/Services/Api/endpoints.js";
 
 export const useExchange = () => {
     const amount = ref(0);
     const selectionOne = ref();
     const selectionTwo = ref();
+    const loading = ref(false);
     const rate = ref(0);
+    const rateNow = ref(0);
+    const isRateVisible = ref(false);
+
+    /**
+     * Verificar si el monto ingresado es correcto,
+     * la selección uno es correcta
+     * la selección dos es correcta
+     */
+    const isTypeDataValidate = computed(() => {
+        return (
+            amount.value &&
+            selectionOne.value &&
+            selectionTwo.value &&
+            isRateVisible.value
+        );
+    });
+
+    /**
+     * Si alguna de las selecciones cambia o el monto
+     * se oculta de nuevo el resultado
+     * de la tasa de cambio
+     */
+    watch([selectionOne, selectionTwo], () => {
+        noRateVisible();
+    });
+
+    /**
+     * Ocultar el resultado de la tasa de cambio
+     */
+    const noRateVisible = () => {
+        isRateVisible.value = false;
+    };
 
     /**
      * Encontrar el pais por el nombre indicado o devolver todos
@@ -59,19 +93,45 @@ export const useExchange = () => {
             return;
         }
 
-        // const calc = selectionOne.value.rate / selectionTwo.value.rate;
-        // rate.value = calc.toFixed(2);
-        console.log(rate.value);
-        console.log(amount.value);
+        // devolver la misma tasa si se selecciona la misma moneda
+        if (selectionOne.value.code === selectionTwo.value.code) {
+            rate.value = amount.value;
+            rateNow.value = 1;
+            isRateVisible.value = true;
+            return;
+        }
+
+        // consultar la tasa de cambio
+        loading.value = true;
+        getExchangeRateFromTo(selectionOne.value.code, selectionTwo.value.code)
+            .then((resp) => {
+                if (resp.status === 200) {
+                    rateNow.value = resp.data;
+                    rate.value = amount.value * rateNow.value;
+                    rate.value = rate.value.toFixed(2);
+                }
+            })
+            .catch((error) => alertError("Error", error.message))
+            .finally(() => {
+                loading.value = false;
+                isRateVisible.value = true;
+            });
     };
 
+    // aplicar torefs a todas las propiedades
     return {
-        amount, // monto ingresado
-        calculateRate, // calcular tasa
-        popularCountries, // paises populares
-        rate, // tasa de cambio
-        searchCountry, // buscar pais
-        selectionOne, // selección del pais uno
-        selectionTwo, // selección del pais dos
+        ...toRefs({
+            amount,
+            selectionOne,
+            selectionTwo,
+            loading,
+            rate,
+            rateNow,
+            isRateVisible,
+        }),
+        popularCountries,
+        isTypeDataValidate,
+        searchCountry,
+        calculateRate,
     };
 };

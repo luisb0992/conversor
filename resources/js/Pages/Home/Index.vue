@@ -1,25 +1,28 @@
 <script setup>
+// import { toRefs } from "vue";
 import { Head, Link } from "@inertiajs/vue3";
 import { canLogin, canRegister } from "./module/index.js";
-
-import { toRefs } from "vue";
+import { useExchange } from "./composables/useIndex.js";
 import InputNumber from "primevue/inputnumber";
 import AutoComplete from "primevue/autocomplete";
 import Button from "primevue/button";
 import Flags from "@/Components/Flags.vue";
-// import { getAllExchangeRates } from "./../../Services/Api/config.js";
-
-import { useExchange } from "./composables/useIndex.js";
+import Loading from "@/Components/Loading.vue";
+// import CalculateRate from "./../Form/CalculateRate.vue";
 
 const {
     amount,
     calculateRate,
+    isTypeDataValidate,
+    loading,
+    noRateVisible,
     popularCountries,
     rate,
+    rateNow,
     searchCountry,
     selectionOne,
     selectionTwo,
-} = toRefs(useExchange());
+} = useExchange();
 </script>
 
 <template>
@@ -57,7 +60,7 @@ const {
             </template>
         </nav>
 
-        <article class="max-w-7xl mx-auto p-6">
+        <article class="max-w-7xl mx-auto p-10 shadow-2xl">
             <header class="w-full">
                 <h1
                     class="text-2xl md:text-6xl font-semibold text-gray-900 dark:text-gray-200 text-center"
@@ -67,12 +70,9 @@ const {
                         >segundos!</span
                     >
                 </h1>
-                <p class="text-gray-200 text-justify py-4">
-                    {{ currencies }}
-                </p>
             </header>
 
-            <section class="flex gap-5 justify-between items-center">
+            <section class="flex gap-5 justify-between items-center mt-10">
                 <div class="flex flex-col gap-2">
                     <label
                         for="amount"
@@ -84,8 +84,9 @@ const {
                         v-model="amount"
                         inputId="amount"
                         class="w-full text-center md:text-2xl font-medium text-dark-blue-1 bg-gray-200"
-                        :min="0"
-                        :max="1000000000"
+                        :minFractionDigits="2"
+                        :maxFractionDigits="3"
+                        @input="noRateVisible"
                     />
                 </div>
                 <div class="flex flex-col gap-2">
@@ -146,9 +147,45 @@ const {
                     <Button
                         label="Convertir"
                         severity="Primary"
-                        @click.stop="calculateRate"
+                        @click="calculateRate"
                     />
                 </div>
+            </section>
+            <section class="flex flex-col justify-center items-center mt-6">
+                <Loading :show="loading" />
+            </section>
+            <section
+                v-if="isTypeDataValidate && !loading"
+                class="mt-6 animate-fade-in-down"
+            >
+                <article class="flex flex-col gap-5 justify-center items-start">
+                    <div>
+                        <p
+                            class="dark:text-gray-200 text-gray-900 text-lg font-normal"
+                        >
+                            {{ amount }} {{ selectionOne.code }} -
+                            {{ selectionOne.name }}
+                        </p>
+                    </div>
+                    <div>
+                        <p
+                            class="dark:text-sky-400 text-sky-900 text-3xl font-semibold"
+                        >
+                            {{ rate }} {{ selectionTwo.code }} -
+                            {{ selectionTwo.name }}
+                        </p>
+                    </div>
+                    <div>
+                        <p
+                            class="dark:text-gray-200 text-sky-900 text-sm font-light"
+                        >
+                            Tasa de cambio actual:
+                            <span class="dark:text-sky-400 text-sky-900">
+                                {{ rateNow }} {{ selectionTwo.code }}
+                            </span>
+                        </p>
+                    </div>
+                </article>
             </section>
         </article>
     </section>
