@@ -1,4 +1,9 @@
 import axios from "axios";
-window.axios = axios;
+globalThis.axios = axios;
 
-window.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
+globalThis.axios.defaults.headers.common = {
+    "X-Requested-With": "XMLHttpRequest",
+    "Access-Control-Allow-Methods": "GET, OPTIONS",
+    "Content-Type": "application/json;charset=UTF-8",
+    "Access-Control-Allow-Origin": "*",
+};

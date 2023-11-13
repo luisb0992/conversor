@@ -1,3 +1,14 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz@6..12&display=swap'); */
+@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,400;6..12,500;6..12,600&display=swap");
+/* @import url("./themes/md-dark-indigo/theme.css"); */
+
+/* tailwind */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* use */
+html,
+body {
+    font-family: "Nunito Sans", sans-serif;
+}
