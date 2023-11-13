@@ -1,12 +1,13 @@
 <script setup>
 import { Head, Link } from "@inertiajs/vue3";
-import { canLogin, canRegister } from "./module/index.js";
+// import { canLogin, canRegister } from "./module/index.js";
 import { useExchange } from "./composables/useIndex.js";
 import InputNumber from "primevue/inputnumber";
 import AutoComplete from "primevue/autocomplete";
 import Button from "primevue/button";
 import Flags from "@/Components/Flags.vue";
 import Loading from "@/Components/Loading.vue";
+import Nav from "@/Components/Nav.vue";
 
 const {
     amount,
@@ -30,39 +31,12 @@ const {
 <template>
     <Head title="Inicio" />
 
-    <section
-        class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gradient-to-t dark:from-dark-blue-1 dark:to-dark-blue-2 selection:bg-blue-400 selection:text-white"
+    <Nav />
+
+    <main
+        class="sm:flex sm:justify-center sm:items-center bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gradient-to-t dark:from-dark-blue-1 dark:to-dark-blue-2 selection:bg-blue-400 selection:text-white py-10"
     >
-        <nav v-if="canLogin" class="sm:fixed sm:top-0 sm:right-0 p-6 text-end">
-            <Link
-                v-if="$page.props.auth.user"
-                :href="route('dashboard')"
-                class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-            >
-                Dashboard
-            </Link>
-
-            <template v-else>
-                <div class="flex gap-3 md:justify-end justify-center">
-                    <Link
-                        :href="route('login')"
-                        class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-                    >
-                        Log in
-                    </Link>
-
-                    <Link
-                        v-if="canRegister"
-                        :href="route('register')"
-                        class="ms-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-                    >
-                        Regístrate ahora
-                    </Link>
-                </div>
-            </template>
-        </nav>
-
-        <article class="max-w-7xl mx-auto p-10 shadow-2xl">
+        <section class="max-w-7xl mx-auto p-10 shadow-2xl">
             <header class="w-full">
                 <h1
                     class="text-2xl md:text-6xl font-semibold text-gray-900 dark:text-gray-200 text-center"
@@ -153,6 +127,13 @@ const {
                         label="Convertir"
                         severity="Primary"
                         @click="calculateRate"
+                        :disabled="
+                            loading || loaderSelectOne || loaderSelectTwo
+                        "
+                        :class="{
+                            'opacity-25':
+                                loading || loaderSelectOne || loaderSelectTwo,
+                        }"
                     />
                 </div>
             </section>
@@ -197,6 +178,7 @@ const {
                 </article>
             </section>
 
+            <!-- columnas de calculo aleatorio -->
             <section
                 class="grid md:grid-cols-2 grid-cols-1 mt-20 md:gap-10"
                 v-if="selectionOne && selectionTwo"
@@ -312,6 +294,6 @@ const {
                     </article>
                 </div>
             </section>
-        </article>
-    </section>
+        </section>
+    </main>
 </template>

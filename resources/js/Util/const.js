@@ -58,3 +58,9 @@ export const originalPopularCountries = JSON.parse(
  * 1, 5, 10, 25, 50, 75, 100, 150, 200, 300
  */
 export const baseAmounts = ref([1, 5, 10, 25, 50, 75, 100, 150, 200, 300]);
+
+/**
+ * Numero de intentos permitidos para usuarios no registrados
+ * 5
+ */
+export const maxAttempts = ref(5);

@@ -4,37 +4,53 @@
 import {
     popularCountries,
     originalPopularCountries,
-    baseAmounts,
 } from "./../../../Util/const.js";
 
 import { computed, ref, watch, toRefs, onMounted } from "vue";
 import { alertError } from "./../../../Util/alerts.js";
 import { getExchangeRateFromTo } from "@/Services/Api/endpoints.js";
+import { useAttemp } from "./useAttemp.js";
+import { useRate } from "./useRate.js";
+import { isUserLogged } from "@/Util/auth";
+import {
+    errorType,
+    numberAttemptsExceeded,
+    amountEmpty,
+    selectionEmpty,
+} from "@/Util/messages.js";
+
+const {
+    canContinueConverting,
+    loadNumberAttempts,
+    incrementNumberAttempts,
+    checkUser,
+} = useAttemp();
+
+const { calculateRates, loaderSelectOne, loaderSelectTwo, ratesOne, ratesTwo } =
+    useRate();
 
 export const useExchange = () => {
     const amount = ref(0);
     const selectionOne = ref();
     const selectionTwo = ref();
     const loading = ref(false);
-    const loaderSelectOne = ref(false);
-    const loaderSelectTwo = ref(false);
     const rate = ref(0);
     const rateNow = ref(0);
-    const ratesOne = ref([]);
-    const ratesTwo = ref([]);
-    const rateSelectOne = ref(0);
-    const rateSelectTwo = ref(0);
     const isRateVisible = ref(false);
 
     onMounted(() => {
         selectionOne.value = originalPopularCountries[0];
         selectionTwo.value = originalPopularCountries[1];
+
+        loadNumberAttempts();
+        checkUser();
     });
 
     /**
      * Verificar si el monto ingresado es correcto,
      * la selección uno es correcta
      * la selección dos es correcta
+     * y el rate puede ser visible
      */
     const isTypeDataValidate = computed(() => {
         return (
@@ -54,7 +70,7 @@ export const useExchange = () => {
         noRateVisible();
 
         // calculamos el rate de ambas columnas
-        calculateRates();
+        calculateRates(selectionOne.value.code, selectionTwo.value.code);
     });
 
     /**
@@ -93,19 +109,20 @@ export const useExchange = () => {
 
     /**
      * Calcular la tasa según las monedas seleccionadas
-     *
      */
     const calculateRate = () => {
+        if (!canContinueConverting.value) {
+            alertError(errorType.error, numberAttemptsExceeded);
+            return;
+        }
+
         if (!amount.value) {
-            alertError("Error", "Por favor ingrese un monto");
+            alertError(errorType.error, amountEmpty);
             return;
         }
 
         if (!selectionOne.value || !selectionTwo.value) {
-            alertError(
-                "Error",
-                "Por favor seleccione ambas monedas para la conversión"
-            );
+            alertError(errorType.error, selectionEmpty);
             return;
         }
 
@@ -125,6 +142,9 @@ export const useExchange = () => {
                     rateNow.value = resp.data;
                     rate.value = amount.value * rateNow.value;
                     rate.value = rate.value.toFixed(2);
+                    if (!isUserLogged.value) {
+                        incrementNumberAttempts();
+                    }
                 }
             })
             .catch((error) => alertError("Error", error.message))
@@ -134,104 +154,24 @@ export const useExchange = () => {
             });
     };
 
-    /**
-     * Calcular la tasa de la primera columna
-     */
-    const calculateRateOne = async (codeOne, codeTwo) => {
-        loaderSelectOne.value = true;
-        return await getExchangeRateFromTo(codeOne, codeTwo)
-            .then((resp) => {
-                if (resp.status === 200) {
-                    rateSelectOne.value = resp.data;
-                    baseAmounts.value.forEach((amount) => {
-                        const total = amount * rateSelectOne.value;
-                        ratesOne.value.push({
-                            amount,
-                            total: total.toFixed(2),
-                        });
-                    });
-                }
-            })
-            .catch((error) => alertError("Error", error.message))
-            .finally(() => (loaderSelectOne.value = false));
-    };
-
-    /**
-     * Calcular la tasa de la segunda columna
-     */
-    const calculateRateTwo = async (codeOne, codeTwo) => {
-        loaderSelectTwo.value = true;
-        return await getExchangeRateFromTo(codeOne, codeTwo)
-            .then((resp) => {
-                if (resp.status === 200) {
-                    rateSelectTwo.value = resp.data;
-                    baseAmounts.value.forEach((amount) => {
-                        const total = amount * rateSelectTwo.value;
-                        ratesTwo.value.push({
-                            amount,
-                            total: total.toFixed(2),
-                        });
-                    });
-                }
-            })
-            .catch((error) => alertError("Error", error.message))
-            .finally(() => (loaderSelectTwo.value = false));
-    };
-
-    /**
-     * Calcular ambos rates
-     */
-    const calculateRates = () => {
-        ratesOne.value = [];
-        ratesTwo.value = [];
-
-        if (selectionOne.value.code === selectionTwo.value.code) {
-            baseAmounts.value.forEach((amount) => {
-                ratesOne.value.push({
-                    amount,
-                    total: amount.toFixed(2),
-                });
-
-                ratesTwo.value.push({
-                    amount,
-                    total: amount.toFixed(2),
-                });
-            });
-            return;
-        }
-
-        // la api no permite ejecuciones múltiples
-        // por eso hay que realizar primero un calculo luego el otro
-        calculateRateOne(selectionOne.value.code, selectionTwo.value.code).then(
-            () => {
-                setTimeout(() => {
-                    calculateRateTwo(
-                        selectionTwo.value.code,
-                        selectionOne.value.code
-                    );
-                }, 500);
-            }
-        );
-    };
-
     // aplicar torefs a todas las propiedades
     return {
         ...toRefs({
-            amount,
-            selectionOne,
-            selectionTwo,
-            loading,
-            loaderSelectOne,
-            loaderSelectTwo,
-            rate,
-            rateNow,
-            ratesOne,
-            ratesTwo,
-            isRateVisible,
+            amount, // monto a convertir
+            selectionOne, // primera moneda
+            selectionTwo, // segunda moneda
+            loading, // loading general
+            loaderSelectOne, // loading primera columna
+            loaderSelectTwo, // loading segunda columna
+            rate, // tasa de cambio
+            rateNow, // tasa de cambio actual
+            ratesOne, // tasa de cambio primera columna
+            ratesTwo, // tasa de cambio segunda columna
+            isRateVisible, // mostrar o no la tasa de cambio
         }),
-        popularCountries,
-        isTypeDataValidate,
-        searchCountry,
-        calculateRate,
+        popularCountries, // paises populares
+        isTypeDataValidate, // validar si los datos son correctos
+        searchCountry, // buscar un pais
+        calculateRate, // calcular la tasa de cambio
     };
 };
