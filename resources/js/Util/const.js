@@ -52,3 +52,9 @@ export const popularCountries = ref([
 export const originalPopularCountries = JSON.parse(
     JSON.stringify(popularCountries.value)
 );
+
+/**
+ * Array base para calcular 10 montos diferentes
+ * 1, 5, 10, 25, 50, 75, 100, 150, 200, 300
+ */
+export const baseAmounts = ref([1, 5, 10, 25, 50, 75, 100, 150, 200, 300]);

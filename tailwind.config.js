@@ -14,6 +14,7 @@ export default {
             colors: {
                 "dark-blue-1": "#0f172a",
                 "dark-blue-2": "#1c2850",
+                "dark-purple-1": "#4f46e5",
             },
 
             keyframes: {

@@ -1,5 +1,4 @@
 <script setup>
-// import { toRefs } from "vue";
 import { Head, Link } from "@inertiajs/vue3";
 import { canLogin, canRegister } from "./module/index.js";
 import { useExchange } from "./composables/useIndex.js";
@@ -8,17 +7,20 @@ import AutoComplete from "primevue/autocomplete";
 import Button from "primevue/button";
 import Flags from "@/Components/Flags.vue";
 import Loading from "@/Components/Loading.vue";
-// import CalculateRate from "./../Form/CalculateRate.vue";
 
 const {
     amount,
     calculateRate,
     isTypeDataValidate,
     loading,
+    loaderSelectOne,
+    loaderSelectTwo,
     noRateVisible,
     popularCountries,
     rate,
     rateNow,
+    ratesOne,
+    ratesTwo,
     searchCountry,
     selectionOne,
     selectionTwo,
@@ -72,7 +74,10 @@ const {
                 </h1>
             </header>
 
-            <section class="flex gap-5 justify-between items-center mt-10">
+            <!-- formulario de calculo -->
+            <section
+                class="flex flex-col md:flex-row gap-5 justify-between items-center mt-10"
+            >
                 <div class="flex flex-col gap-2">
                     <label
                         for="amount"
@@ -83,7 +88,7 @@ const {
                     <InputNumber
                         v-model="amount"
                         inputId="amount"
-                        class="w-full text-center md:text-2xl font-medium text-dark-blue-1 bg-gray-200"
+                        class="w-72 h-[50px] rounded-md lg:w-full text-center md:text-2xl font-medium text-dark-blue-1 bg-gray-200"
                         :minFractionDigits="2"
                         :maxFractionDigits="3"
                         @input="noRateVisible"
@@ -151,9 +156,13 @@ const {
                     />
                 </div>
             </section>
+
+            <!-- loading -->
             <section class="flex flex-col justify-center items-center mt-6">
                 <Loading :show="loading" />
             </section>
+
+            <!-- resultado -->
             <section
                 v-if="isTypeDataValidate && !loading"
                 class="mt-6 animate-fade-in-down"
@@ -186,6 +195,122 @@ const {
                         </p>
                     </div>
                 </article>
+            </section>
+
+            <section
+                class="grid md:grid-cols-2 grid-cols-1 mt-20 md:gap-10"
+                v-if="selectionOne && selectionTwo"
+            >
+                <div class="rounded-md shadow-md">
+                    <article>
+                        <div class="p-5 bg-dark-purple-1">
+                            <h3
+                                class="text-xl font-bold leading-6 dark:text-gray-300 text-gray-900 text-center"
+                            >
+                                Convertir {{ selectionOne.name }} a
+                                {{ selectionTwo.name }}
+                            </h3>
+                            <div class="flex justify-evenly items-center pt-3">
+                                <p class="flex flex-col gap-3">
+                                    <Flags :code="selectionOne.code" />
+                                    <span
+                                        class="dark:text-sky-400 text-sky-900 text-3xl font-semibold"
+                                    >
+                                        {{ selectionOne.code }}
+                                    </span>
+                                </p>
+                                <p class="flex flex-col gap-3">
+                                    <Flags :code="selectionTwo.code" />
+                                    <span
+                                        class="dark:text-sky-400 text-sky-900 text-3xl font-semibold"
+                                    >
+                                        {{ selectionTwo.code }}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="h-[640px] bg-gray-100 dark:bg-gray-800">
+                            <div
+                                class="flex justify-center items-center h-full"
+                                v-if="loaderSelectOne"
+                            >
+                                <Loading :show="loaderSelectOne" />
+                            </div>
+                            <div
+                                v-for="(r, index) in ratesOne"
+                                :key="index"
+                                class="flex justify-evenly items-center p-5 animate-swing-in-top-fwd"
+                                v-else
+                            >
+                                <p
+                                    class="dark:text-gray-300 text-gray-900 text-center"
+                                >
+                                    {{ r.amount }} {{ selectionOne.code }}
+                                </p>
+                                <p
+                                    class="dark:text-gray-300 text-gray-900 text-center"
+                                >
+                                    {{ r.total }} {{ selectionTwo.code }}
+                                </p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                <div class="rounded-md shadow-md">
+                    <article>
+                        <div class="p-5 bg-dark-purple-1">
+                            <h3
+                                class="text-xl font-bold leading-6 dark:text-gray-300 text-gray-900 text-center"
+                            >
+                                Convertir {{ selectionTwo.name }} a
+                                {{ selectionOne.name }}
+                            </h3>
+                            <div class="flex justify-evenly items-center pt-3">
+                                <p class="flex flex-col gap-3">
+                                    <Flags :code="selectionTwo.code" />
+                                    <span
+                                        class="dark:text-sky-400 text-sky-900 text-3xl font-semibold"
+                                    >
+                                        {{ selectionTwo.code }}
+                                    </span>
+                                </p>
+                                <p class="flex flex-col gap-3">
+                                    <Flags :code="selectionOne.code" />
+                                    <span
+                                        class="dark:text-sky-400 text-sky-900 text-3xl font-semibold"
+                                    >
+                                        {{ selectionOne.code }}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="h-[640px] bg-gray-100 dark:bg-gray-800">
+                            <div
+                                class="flex justify-center items-center h-full"
+                                v-if="loaderSelectTwo"
+                            >
+                                <Loading :show="loaderSelectTwo" />
+                            </div>
+                            <div
+                                v-for="(r, index) in ratesTwo"
+                                :key="index"
+                                class="flex justify-evenly items-center p-5 animate-swing-in-top-fwd"
+                                v-else
+                            >
+                                <p
+                                    class="dark:text-gray-300 text-gray-900 text-center"
+                                >
+                                    {{ r.amount }} {{ selectionTwo.code }}
+                                </p>
+                                <p
+                                    class="dark:text-gray-300 text-gray-900 text-center"
+                                >
+                                    {{ r.total }} {{ selectionOne.code }}
+                                </p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
             </section>
         </article>
     </section>
