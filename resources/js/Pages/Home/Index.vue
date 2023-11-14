@@ -35,14 +35,11 @@ const {
 <template>
     <Head title="Inicio" />
 
-    <Nav />
-
     <main
-        class="sm:flex sm:justify-center sm:items-center bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gradient-to-t dark:from-dark-blue-1 dark:to-dark-blue-2 selection:bg-blue-400 selection:text-white py-20"
+        class="flex flex-col bg-gray-100 dark:bg-gradient-to-t dark:from-dark-blue-1 dark:to-dark-blue-2 selection:bg-blue-400 selection:text-white"
     >
-        <section
-            class="w-full md:max-w-7xl mx-auto p-4 md:p-10 shadow-2xl"
-        >
+        <Nav />
+        <section class="w-full md:max-w-7xl mx-auto p-4 md:p-10 shadow-2xl mt-5 mb-16">
             <AppLogo />
             <Header />
 

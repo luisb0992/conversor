@@ -8,16 +8,16 @@ import { Link } from "@inertiajs/vue3";
 <template>
     <nav
         v-if="canLogin"
-        class="fixed top-0 right-0 text-end max-w-7xl"
+        class="w-full md:max-w-7xl mx-auto flex justify-end bg-dark-blue-2"
     >
-        <div class="flex items-center ms-6" v-if="$page.props.auth.user">
-            <div class="">
+        <div class="flex items-center" v-if="$page.props.auth.user">
+            <div>
                 <Dropdown align="right" width="48">
                     <template #trigger>
                         <span class="inline-flex rounded">
                             <button
                                 type="button"
-                                class="inline-flex items-center px-4 py-3 border border-transparent text-base leading-5 font-medium rounded text-gray-900 dark:text-gray-300 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150"
+                                class="inline-flex items-center px-4 py-3 border border-transparent text-base leading-5 font-medium rounded text-gray-900 dark:text-gray-300 bg-white dark:bg-dark-blue-2 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150"
                             >
                                 {{ $page.props.auth.user.name }}
 
@@ -54,7 +54,7 @@ import { Link } from "@inertiajs/vue3";
         </div>
 
         <div v-else>
-            <div class="flex gap-3 md:justify-end justify-center p-4">
+            <div class="flex gap-3 md:justify-end justify-center pt-4 pr-4 md:pr-8 xl:pr-0">
                 <Link
                     :href="route('login')"
                     class="text-sm font-light text-gray-600 hover:text-gray-900 dark:text-gray-200 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
