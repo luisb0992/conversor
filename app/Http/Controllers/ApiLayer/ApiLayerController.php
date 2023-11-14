@@ -11,8 +11,6 @@ class ApiLayerController extends Controller
     public function __construct(
         private ApiLayer $service
     ) {
-        // $this->middleware('CheckApiRequestMiddleware', ['only' => ['funcion1', 'funcion2']]);
-        // $this->middleware('CheckApiRequestMiddleware');
     }
 
     /**
@@ -30,6 +28,6 @@ class ApiLayerController extends Controller
      */
     public function getExchangeRateFromTo(ExchangeRateFromToRequest $request): ?float
     {
-        return $this->service->getExchangeRateFromTo($request->from, $request->to);
+        return $this->service->getExchangeRateFromTo($request->from, $request->to, $request->user_id);
     }
 }

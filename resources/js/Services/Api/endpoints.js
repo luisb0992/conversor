@@ -16,9 +16,10 @@ export const getExchangeRate = async (currency) => {
 };
 
 // obtener la tasa de cambio de una divisa a otra
-export const getExchangeRateFromTo = async (from, to) => {
+export const getExchangeRateFromTo = async (from, to, user_id = null) => {
     return await axios.post(route("apilayer.getExchangeRateFromTo"), {
         from,
         to,
+        user_id
     });
 };

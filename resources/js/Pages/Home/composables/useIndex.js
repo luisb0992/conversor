@@ -1,17 +1,13 @@
 /**
- * funcion composable para la gestion de la conversion de monedas
+ * funcion composable para la gestion de la conversion de monedas del index
  */
-import {
-    popularCountries,
-    originalPopularCountries,
-} from "./../../../Util/const.js";
-
+import { popularCountries, originalPopularCountries } from "@/Util/const.js";
+import { isUserLogged, userId } from "@/Util/auth";
 import { computed, ref, watch, toRefs, onMounted } from "vue";
 import { alertError } from "./../../../Util/alerts.js";
 import { getExchangeRateFromTo } from "@/Services/Api/endpoints.js";
 import { useAttemp } from "./useAttemp.js";
 import { useRate } from "./useRate.js";
-import { isUserLogged } from "@/Util/auth";
 import {
     errorType,
     numberAttemptsExceeded,
@@ -38,6 +34,11 @@ export const useExchange = () => {
     const rateNow = ref(0);
     const isRateVisible = ref(false);
 
+    /**
+     * Al montar el componente se cargan los datos iniciales
+     * se cargan los intentos permitidos
+     * se verifica si el usuario esta logueado
+     */
     onMounted(() => {
         selectionOne.value = originalPopularCountries[0];
         selectionTwo.value = originalPopularCountries[1];
@@ -59,6 +60,13 @@ export const useExchange = () => {
             selectionTwo.value &&
             isRateVisible.value
         );
+    });
+
+    /**
+     * Verifica todos lo loaders
+     */
+    const allLoaders = computed(() => {
+        return loading.value || loaderSelectOne.value || loaderSelectTwo.value;
     });
 
     /**
@@ -136,7 +144,11 @@ export const useExchange = () => {
 
         // consultar la tasa de cambio
         loading.value = true;
-        getExchangeRateFromTo(selectionOne.value.code, selectionTwo.value.code)
+        getExchangeRateFromTo(
+            selectionOne.value.code,
+            selectionTwo.value.code,
+            userId.value
+        )
             .then((resp) => {
                 if (resp.status === 200) {
                     rateNow.value = resp.data;
@@ -173,5 +185,6 @@ export const useExchange = () => {
         isTypeDataValidate, // validar si los datos son correctos
         searchCountry, // buscar un pais
         calculateRate, // calcular la tasa de cambio
+        allLoaders, // verificar todos los loaders
     };
 };

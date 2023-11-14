@@ -1,6 +1,5 @@
 <script setup>
-import { Head, Link } from "@inertiajs/vue3";
-// import { canLogin, canRegister } from "./module/index.js";
+import { Head } from "@inertiajs/vue3";
 import { useExchange } from "./composables/useIndex.js";
 import InputNumber from "primevue/inputnumber";
 import AutoComplete from "primevue/autocomplete";
@@ -8,9 +7,13 @@ import Button from "primevue/button";
 import Flags from "@/Components/Flags.vue";
 import Loading from "@/Components/Loading.vue";
 import Nav from "@/Components/Nav.vue";
+import Transform from "@/Components/icons/Transform.vue";
+import Header from "@/Components/Header.vue";
+import Footer from "@/Components/Footer.vue";
 
 const {
     amount,
+    allLoaders,
     calculateRate,
     isTypeDataValidate,
     loading,
@@ -37,16 +40,7 @@ const {
         class="sm:flex sm:justify-center sm:items-center bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gradient-to-t dark:from-dark-blue-1 dark:to-dark-blue-2 selection:bg-blue-400 selection:text-white py-10"
     >
         <section class="max-w-7xl mx-auto p-10 shadow-2xl">
-            <header class="w-full">
-                <h1
-                    class="text-2xl md:text-6xl font-semibold text-gray-900 dark:text-gray-200 text-center"
-                >
-                    ¡Convierta de una moneda a otra en cuestión de
-                    <span class="text-sky-700 dark:text-[#4f46e5]"
-                        >segundos!</span
-                    >
-                </h1>
-            </header>
+            <Header />
 
             <!-- formulario de calculo -->
             <section
@@ -127,14 +121,13 @@ const {
                         label="Convertir"
                         severity="Primary"
                         @click="calculateRate"
-                        :disabled="
-                            loading || loaderSelectOne || loaderSelectTwo
-                        "
-                        :class="{
-                            'opacity-25':
-                                loading || loaderSelectOne || loaderSelectTwo,
-                        }"
-                    />
+                        :disabled="allLoaders"
+                        :class="{ 'opacity-25': allLoaders }"
+                        class="flex gap-2"
+                    >
+                        <Transform />
+                        Convertir
+                    </Button>
                 </div>
             </section>
 
@@ -148,10 +141,10 @@ const {
                 v-if="isTypeDataValidate && !loading"
                 class="mt-6 animate-fade-in-down"
             >
-                <article class="flex flex-col gap-5 justify-center items-start">
+                <article class="flex flex-col gap-5 justify-center items-center md:items-start">
                     <div>
                         <p
-                            class="dark:text-gray-200 text-gray-900 text-lg font-normal"
+                            class="dark:text-gray-200 text-gray-900 text-lg font-normal text-center md:text-left"
                         >
                             {{ amount }} {{ selectionOne.code }} -
                             {{ selectionOne.name }}
@@ -159,7 +152,7 @@ const {
                     </div>
                     <div>
                         <p
-                            class="dark:text-sky-400 text-sky-900 text-3xl font-semibold"
+                            class="dark:text-sky-400 text-sky-900 text-3xl font-semibold text-center md:text-left"
                         >
                             {{ rate }} {{ selectionTwo.code }} -
                             {{ selectionTwo.name }}
@@ -167,7 +160,7 @@ const {
                     </div>
                     <div>
                         <p
-                            class="dark:text-gray-200 text-sky-900 text-sm font-light"
+                            class="dark:text-gray-200 text-sky-900 text-sm font-light text-center md:text-left"
                         >
                             Tasa de cambio actual:
                             <span class="dark:text-sky-400 text-sky-900">
@@ -180,14 +173,14 @@ const {
 
             <!-- columnas de calculo aleatorio -->
             <section
-                class="grid md:grid-cols-2 grid-cols-1 mt-20 md:gap-10"
+                class="grid md:grid-cols-2 grid-cols-1 mt-20 gap-10"
                 v-if="selectionOne && selectionTwo"
             >
-                <div class="rounded-md shadow-md">
+                <div class="rounded-xl shadow-md">
                     <article>
                         <div class="p-5 bg-dark-purple-1">
                             <h3
-                                class="text-xl font-bold leading-6 dark:text-gray-300 text-gray-900 text-center"
+                                class="text-xl font-bold leading-6 text-gray-200 text-center"
                             >
                                 Convertir {{ selectionOne.name }} a
                                 {{ selectionTwo.name }}
@@ -196,7 +189,7 @@ const {
                                 <p class="flex flex-col gap-3">
                                     <Flags :code="selectionOne.code" />
                                     <span
-                                        class="dark:text-sky-400 text-sky-900 text-3xl font-semibold"
+                                        class="dark:text-sky-400 text-sky-400 text-3xl font-semibold"
                                     >
                                         {{ selectionOne.code }}
                                     </span>
@@ -204,7 +197,7 @@ const {
                                 <p class="flex flex-col gap-3">
                                     <Flags :code="selectionTwo.code" />
                                     <span
-                                        class="dark:text-sky-400 text-sky-900 text-3xl font-semibold"
+                                        class="dark:text-sky-400 text-sky-400 text-3xl font-semibold"
                                     >
                                         {{ selectionTwo.code }}
                                     </span>
@@ -238,11 +231,11 @@ const {
                         </div>
                     </article>
                 </div>
-                <div class="rounded-md shadow-md">
+                <div class="rounded-xl shadow-md">
                     <article>
                         <div class="p-5 bg-dark-purple-1">
                             <h3
-                                class="text-xl font-bold leading-6 dark:text-gray-300 text-gray-900 text-center"
+                                class="text-xl font-bold leading-6 text-gray-300 text-center"
                             >
                                 Convertir {{ selectionTwo.name }} a
                                 {{ selectionOne.name }}
@@ -251,7 +244,7 @@ const {
                                 <p class="flex flex-col gap-3">
                                     <Flags :code="selectionTwo.code" />
                                     <span
-                                        class="dark:text-sky-400 text-sky-900 text-3xl font-semibold"
+                                        class="dark:text-sky-400 text-sky-400 text-3xl font-semibold"
                                     >
                                         {{ selectionTwo.code }}
                                     </span>
@@ -259,7 +252,7 @@ const {
                                 <p class="flex flex-col gap-3">
                                     <Flags :code="selectionOne.code" />
                                     <span
-                                        class="dark:text-sky-400 text-sky-900 text-3xl font-semibold"
+                                        class="dark:text-sky-400 text-sky-400 text-3xl font-semibold"
                                     >
                                         {{ selectionOne.code }}
                                     </span>
@@ -296,4 +289,6 @@ const {
             </section>
         </section>
     </main>
+
+    <Footer />
 </template>

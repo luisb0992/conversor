@@ -12,3 +12,11 @@ export const isUserLogged = computed(() => {
     const { props } = usePage();
     return props.auth.user;
 });
+
+/**
+ * Devuelve id del usuario logueado
+ */
+export const userId = computed(() => {
+    const { props } = usePage();
+    return props.auth?.user?.id ?? null;
+});

@@ -23,10 +23,8 @@ trait ApiTrait
    */
   public function saveApiRequest(array $data): ApiRequest
   {
-
     $data['base_endpoint'] = $this->api->baseURl();
     $data['token'] = $this->api->token();
-    $data['user_id'] = auth()->user()->id ?? null;
 
     return ApiRequest::create($data);
   }

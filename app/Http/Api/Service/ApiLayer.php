@@ -38,7 +38,7 @@ class ApiLayer
   /**
    * Devuelve la tasa de cambio de dos monedas especificas
    */
-  public function getExchangeRateFromTo(string $from, string $to): ?float
+  public function getExchangeRateFromTo(string $from, string $to, int $userID = null): ?float
   {
     $currency = $this->api->currency() . $to;
     $source = $this->api->source() . $from;
@@ -54,6 +54,7 @@ class ApiLayer
         'currency' => $to,
         'source' => $from,
         'rate' => $rate,
+        'user_id' => $userID
       ]);
 
       return $rate;
