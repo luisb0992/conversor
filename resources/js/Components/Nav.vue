@@ -8,7 +8,7 @@ import { Link } from "@inertiajs/vue3";
 <template>
     <nav
         v-if="canLogin"
-        class="fixed top-0 right-0 text-end"
+        class="fixed top-0 right-0 text-end max-w-7xl"
     >
         <div class="flex items-center ms-6" v-if="$page.props.auth.user">
             <div class="">
@@ -57,7 +57,7 @@ import { Link } from "@inertiajs/vue3";
             <div class="flex gap-3 md:justify-end justify-center p-4">
                 <Link
                     :href="route('login')"
-                    class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-200 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
+                    class="text-sm font-light text-gray-600 hover:text-gray-900 dark:text-gray-200 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
                 >
                     Login
                 </Link>
@@ -65,7 +65,7 @@ import { Link } from "@inertiajs/vue3";
                 <Link
                     v-if="canRegister"
                     :href="route('register')"
-                    class="ms-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-200 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
+                    class="text-sm  ms-4 font-light text-gray-600 hover:text-gray-900 dark:text-gray-200 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
                 >
                     Regístrate ahora
                 </Link>

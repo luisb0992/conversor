@@ -10,6 +10,7 @@ import Nav from "@/Components/Nav.vue";
 import Transform from "@/Components/icons/Transform.vue";
 import Header from "@/Components/Header.vue";
 import Footer from "@/Components/Footer.vue";
+import AppLogo from "@/Components/AppLogo.vue";
 
 const {
     amount,
@@ -37,16 +38,19 @@ const {
     <Nav />
 
     <main
-        class="sm:flex sm:justify-center sm:items-center bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gradient-to-t dark:from-dark-blue-1 dark:to-dark-blue-2 selection:bg-blue-400 selection:text-white py-10"
+        class="sm:flex sm:justify-center sm:items-center bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gradient-to-t dark:from-dark-blue-1 dark:to-dark-blue-2 selection:bg-blue-400 selection:text-white py-20"
     >
-        <section class="max-w-7xl mx-auto p-10 shadow-2xl">
+        <section
+            class="w-full md:max-w-7xl mx-auto p-4 md:p-10 shadow-2xl"
+        >
+            <AppLogo />
             <Header />
 
             <!-- formulario de calculo -->
             <section
                 class="flex flex-col md:flex-row gap-5 justify-between items-center mt-10"
             >
-                <div class="flex flex-col gap-2">
+                <div class="flex flex-col gap-2 w-full">
                     <label
                         for="amount"
                         class="dark:text-gray-200 text-gray-900 text-lg"
@@ -56,13 +60,13 @@ const {
                     <InputNumber
                         v-model="amount"
                         inputId="amount"
-                        class="w-72 h-[50px] rounded-md lg:w-full text-center md:text-2xl font-medium text-dark-blue-1 bg-gray-200"
+                        class="h-[50px] rounded-md w-full text-center md:text-2xl font-medium text-dark-blue-1 bg-gray-200"
                         :minFractionDigits="2"
                         :maxFractionDigits="3"
                         @input="noRateVisible"
                     />
                 </div>
-                <div class="flex flex-col gap-2">
+                <div class="flex flex-col gap-2 w-full">
                     <label
                         for="from"
                         class="dark:text-gray-200 text-gray-900 text-lg"
@@ -89,7 +93,7 @@ const {
                         </template>
                     </AutoComplete>
                 </div>
-                <div class="flex flex-col gap-2">
+                <div class="flex flex-col gap-2 w-full">
                     <label
                         for="to"
                         class="dark:text-gray-200 text-gray-900 text-lg"
@@ -141,7 +145,9 @@ const {
                 v-if="isTypeDataValidate && !loading"
                 class="mt-6 animate-fade-in-down"
             >
-                <article class="flex flex-col gap-5 justify-center items-center md:items-start">
+                <article
+                    class="flex flex-col gap-5 justify-center items-center md:items-start"
+                >
                     <div>
                         <p
                             class="dark:text-gray-200 text-gray-900 text-lg font-normal text-center md:text-left"
@@ -171,9 +177,13 @@ const {
                 </article>
             </section>
 
+            <div
+                class="border-t border-gray-500 dark:border-sky-400 w-full mt-10 pb-12"
+            ></div>
+
             <!-- columnas de calculo aleatorio -->
             <section
-                class="grid md:grid-cols-2 grid-cols-1 mt-20 gap-10"
+                class="grid md:grid-cols-2 grid-cols-1 gap-10"
                 v-if="selectionOne && selectionTwo"
             >
                 <div class="rounded-xl shadow-md">

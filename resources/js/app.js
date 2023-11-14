@@ -1,5 +1,6 @@
 import "./lib/axios.js";
 import "../css/app.css";
+import.meta.glob(["../images/**"]);
 
 // librerías adicionales
 import { createApp, h } from "vue";
@@ -11,11 +12,8 @@ import { ZiggyVue } from "../../vendor/tightenco/ziggy/dist/vue.m";
 import PrimeVue from "primevue/config";
 import "./../css/themes/tailwind-light/theme.css";
 
-// sweet alert
-// import Swal from 'sweetalert2/dist/sweetalert2.js'
-// import 'sweetalert2/src/sweetalert2.scss'
-
 const appName = import.meta.env.VITE_APP_NAME || "Conversor de monedas";
+
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: (name) =>

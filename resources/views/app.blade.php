@@ -7,6 +7,12 @@
 
     <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
+    {{--  favicon  --}}
+    {{--  <link rel="icon" href="./../images/favicon/favicon-32x32.png'" type="image/png" />  --}}
+    <link rel="shortcut icon" href="{{ Vite::asset('resources/images/favicon/favicon-32x32.png') }}" type="image/x-icon">
+
+    {{--  Fonts  --}}
+
     <!-- Scripts -->
     @routes
     @inertiaHead

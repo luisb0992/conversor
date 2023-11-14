@@ -2,10 +2,10 @@
 const year = new Date().getFullYear();
 </script>
 <template>
-    <footer class="text-gray-900 dark:text-gray-200 bg-dark-blue-1 pt-20">
-        <div class="bg-dark-blue-1 text-gray-900 dark:text-gray-400">
+    <footer class="text-gray-900 dark:text-gray-200 dark:bg-dark-blue-1 bg-gray-200 h-40">
+        <div class="dark:bg-dark-blue-1 bg-gray-200 text-gray-900 dark:text-gray-400 h-full">
             <div
-                class="container px-5 py-6 mx-auto flex items-center sm:flex-row flex-col"
+                class="max-w-7xl px-5 py-6 mx-auto h-full flex items-center sm:flex-row flex-col justify-center"
             >
                 <a
                     class="flex title-font font-medium items-center md:justify-start justify-center"
