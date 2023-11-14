@@ -11,10 +11,10 @@ composer install
 php artisan migrate
 npm install
 npm run dev
-```
 
 para correr los test
 php artisan test
+```
 
 ### Tecnologías
 
@@ -26,9 +26,4 @@ php artisan test
 
 ### Licencia
 
-MIT
-
-```
-
-[]: # Path: .env
-```
+MIT 2023
